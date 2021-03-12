@@ -1,17 +1,21 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 
 <div id="application">
-  Totale: <input v-model="totale" type="number" name="Totale" />
-  <br>
-  <div v-for="(erede, indice) in eredi">
-    Erede: <input v-model="eredi[indice]" type="number" name="Erede" />
-  </div>
-  <button @click="addRow">Aggiungi erede</button>
-  <button @click="addRow">Rimuovi erede</button>
-  <br>
-  Nuovo totale: <input v-model="nuovoTotale" type="number" name="nuovoTotale" />
-  <div v-for="erede in eredi">
-    <li>Erede: {{ calcolaPercentuale(erede) }}</li>
+  <input v-model="percentuale" type="checkbox">
+    Totale: <input v-model="totale" type="number" name="Totale" />
+    <br>
+    <div v-for="(erede, indice) in eredi">
+      Erede: <input v-model="eredi[indice]" type="number" name="Erede" />
+    </div>
+    <button @click="addRow">Aggiungi erede</button>
+    <button @click="addRow">Rimuovi erede</button>
+    <br>
+    <div v-if="!percentuale">
+      Nuovo totale: <input v-model="nuovoTotale" type="number" name="nuovoTotale" />
+    </div>
+    <div v-for="erede in eredi">
+      <li>Erede: {{ calcolaPercentuale(erede) }}</li>
+    </div>
   </div>
 </div>
 
@@ -21,7 +25,8 @@
     data: {
       totale: 0,
       nuovoTotale: 0,
-      eredi: []
+      eredi: [],
+      percentuale: false
     },
     methods: {
       addRow() {
@@ -31,10 +36,11 @@
         this.eredi.pop();
       },
       calcolaPercentuale(erede) {
-        console.log(this.totale);
-        console.log(erede);
-        console.log(this.nuovoTotale);
-        return erede / this.totale * this.nuovoTotale;
+        if(this.percentuale) {
+          return this.totale * erede / 100;
+        } else {
+          return erede / this.totale * this.nuovoTotale;
+        }
       }
     }
   });
