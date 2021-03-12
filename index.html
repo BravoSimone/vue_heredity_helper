@@ -1,20 +1,31 @@
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.5/build/pure-min.css" integrity="sha384-LTIDeidl25h2dPxrB2Ekgc9c7sEC3CWGM6HeFmuDNUjX76Ert4Z4IY714dhZHPLd" crossorigin="anonymous">
 
-<div id="application">
-  <input v-model="percentuale" type="checkbox">
-    Totale: <input v-model="totale" type="number" name="Totale" />
-    <br>
-    <div v-for="(erede, indice) in eredi">
-      Erede: <input v-model="eredi[indice]" type="number" name="Erede" />
+<div id="application" style="margin: 30 10%">
+  <h2>{{showMode()}}</h2>
+  <button @click="changeMode()" class="button-primary pure-button">Importo/Percentuale</button>
+  <div class="pure-grid">
+    <div class="pure-u-1-4">
+      Totale: <input v-model="totale" type="number" name="Totale" />
     </div>
-    <button @click="addRow">Aggiungi erede</button>
-    <button @click="addRow">Rimuovi erede</button>
-    <br>
-    <div v-if="!percentuale">
-      Nuovo totale: <input v-model="nuovoTotale" type="number" name="nuovoTotale" />
+    <div class="pure-u-1-4">
+      <div v-if="!percentuale">
+        Nuovo totale: <input v-model="nuovoTotale" type="number" name="nuovoTotale" />
+      </div>
     </div>
-    <div v-for="erede in eredi">
-      <li>Erede: {{ calcolaPercentuale(erede) }}</li>
+  </div>
+  <div class="pure-grid">
+    <div class="pure-u-1-4">
+      <div v-for="(erede, index) in eredi">
+        Erede {{index + 1}}: <input v-model="eredi[index]" type="number" name="Erede" />
+      </div>
+      <button @click="addRow" class="button-primary pure-button">Aggiungi erede</button>
+      <button @click="removeRow" class="button-error pure-button">Rimuovi erede</button>
+    </div>
+    <div class="pure-u-1-4">
+      <div v-for="(erede, index) in eredi">
+        Erede {{index + 1}}: <input class="disabled" readonly="" type="number" :value="calcolaPercentuale(erede)" />
+      </div>
     </div>
   </div>
 </div>
@@ -35,6 +46,16 @@
       removeRow() {
         this.eredi.pop();
       },
+      changeMode() {
+        this.percentuale = !this.percentuale;
+      },
+      showMode() {
+        if(this.percentuale) {
+          return "Percentuale"
+        } else {
+          return "Importo esatto"
+        }
+      },
       calcolaPercentuale(erede) {
         if(this.percentuale) {
           return this.totale * erede / 100;
@@ -45,3 +66,39 @@
     }
   });
 </script>
+
+<style>
+  * {
+    margin: 5px 0;
+  }
+
+  .button-success,
+  .button-error,
+  .button-warning,
+  .button-secondary,
+  .button-primary{
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  .button-primary {
+    background: rgb(0, 120, 231);
+  }
+
+  .button-success {
+    background: rgb(28, 184, 65);
+  }
+
+  .button-error {
+    background: rgb(202, 60, 60);
+  }
+
+  .button-warning {
+    background: rgb(223, 117, 20);
+  }
+
+  .button-secondary {
+    background: rgb(66, 184, 221);
+  }
+</style>
